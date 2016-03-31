@@ -1,0 +1,19 @@
+var restify = require('restify');
+var builder = require('botbuilder');
+
+var bot = new builder.BotConnectorBot({appId: 'YourAppId', appSecret: 'YourAppSecret'});
+bot.add('/', function(session) {
+	var re = /sold/i
+	var isSold = re.exec(session.message.text);
+	if(isSold != null) {
+		session.send('the item has been sold to you. Best of luck!');
+	} else {
+		session.send('Would you like to buy an item?');
+	}
+});
+
+var server = restify.createServer();
+server.post('/api/messages', bot.verifyBotFramework(), bot.listen());
+server.listen(process.env.port || 8080, function () {
+	console.log('Started');
+});
